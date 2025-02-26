@@ -1,15 +1,22 @@
+package Command;
+
+import Game.Room;
+
 import java.io.*;
 import java.util.*;
 
-public class World {
+public class LoadMap implements Command {
     private final Map<String, Room> rooms = new HashMap<>();
     private boolean worldLoaded = false;
+    private boolean Running = true;
+    private final String filename;
 
-    public World(String filename) {
-        loadWorld(filename);
+    public LoadMap(String filename) {
+        this.filename = filename;
     }
 
-    private void loadWorld(String filename) {
+    @Override
+    public String execute() {
         worldLoaded = false;
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line;
@@ -28,43 +35,27 @@ public class World {
                     Room room = new Room(name);
                     rooms.put(getKey(x, y), room);
                 } catch (NumberFormatException e) {
-                    throw new NumberFormatException("Invalid coordinates " + filename + " at line " + lineNumber + ": " + line);
+                    throw new NumberFormatException("Invalid coordinates in " + filename + " at line " + lineNumber + ": " + line);
                 }
             }
 
             worldLoaded = true;
+            return filename + " loaded successfully";
         } catch (FileNotFoundException e) {
-            System.err.println("Error: " + filename + " not found");
+            return "Error: " + filename + " not found";
         } catch (IOException e) {
-            System.err.println("Error reading file: " + filename + " - " + e.getMessage());
+            return "Error reading file: " + filename + " - " + e.getMessage();
         } catch (IllegalArgumentException e) {
-            System.err.println("Error in world data: " + e.getMessage());
+            return "Error in world data: " + e.getMessage();
         }
-    }
-
-
-    public boolean canMove(int fromX, int fromY, int toX, int toY) {
-        String toKey = getKey(toX, toY);
-
-        if (!rooms.containsKey(toKey)) {
-            return false;
-        }
-
-        char direction = getDirection(fromX, fromY, toX, toY);
-
-        return direction != ' ';
-    }
-
-    private char getDirection(int x1, int y1, int x2, int y2) {
-        if (x2 == x1 && y2 == y1 - 1) return 'n'; //north
-        if (x2 == x1 && y2 == y1 + 1) return 's'; //south
-        if (x2 == x1 - 1 && y2 == y1) return 'w'; //west
-        if (x2 == x1 + 1 && y2 == y1) return 'e'; //east
-        return ' ';
     }
 
     private String getKey(int x, int y) {
         return x + "," + y;
+    }
+
+    public boolean canMove(int toX, int toY) {
+        return rooms.containsKey(getKey(toX, toY));
     }
 
     public String getRoomName(int x, int y) {
@@ -74,5 +65,18 @@ public class World {
 
     public boolean isWorldLoaded() {
         return worldLoaded;
+    }
+
+    public boolean isRunning() {
+        return Running;
+    }
+
+    public void stopGame() {
+        Running = false;
+    }
+
+    @Override
+    public boolean exit() {
+        return false;
     }
 }

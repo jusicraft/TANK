@@ -1,3 +1,5 @@
+package Game;
+
 public class Room {
     private final String roomName;
 
