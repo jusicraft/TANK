@@ -20,7 +20,7 @@ public class Move implements Command {
     @Override
     public String execute() {
         Scanner scanner = new Scanner(System.in);
-        String command = scanner.nextLine().toLowerCase();
+        String input = scanner.nextLine().toLowerCase();
 
         moves = Map.of(
                 "north", new int[]{0, 1},
@@ -29,24 +29,15 @@ public class Move implements Command {
                 "east", new int[]{1, 0}
         );
 
-        if (command.equals("quit")) {  // <-- Handle quitting
-            loadMap.stopGame();
-            return "Game exited.";
-        }
-
-        if (command.equals("help")) {  // <-- Handle help
-            return help.execute();
-        }
-
-        if (!moves.containsKey(command)) {
+        if (!moves.containsKey(input)) {
             return "Invalid direction!";
         }
 
         int x = player.getX();
         int y = player.getY();
 
-        int newX = x + moves.get(command)[0];
-        int newY = y + moves.get(command)[1];
+        int newX = x + moves.get(input)[0];
+        int newY = y + moves.get(input)[1];
 
         if (loadMap.canMove(newX, newY)) {
             player.setX(newX);

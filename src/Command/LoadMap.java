@@ -8,7 +8,6 @@ import java.util.*;
 public class LoadMap implements Command {
     private final Map<String, Room> rooms = new HashMap<>();
     private boolean worldLoaded = false;
-    private boolean Running = true;
     private final String filename;
 
     public LoadMap(String filename) {
@@ -63,16 +62,12 @@ public class LoadMap implements Command {
         return (room != null) ? room.getRoomName() : "Void";
     }
 
+    public Map<String, Room> getRooms() {
+        return rooms;
+    }
+
     public boolean isWorldLoaded() {
         return worldLoaded;
-    }
-
-    public boolean isRunning() {
-        return Running;
-    }
-
-    public void stopGame() {
-        Running = false;
     }
 
     @Override

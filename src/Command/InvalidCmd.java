@@ -1,9 +1,9 @@
 package Command;
 
-public class Help implements Command{
+public class InvalidCmd implements Command {
     @Override
     public String execute() {
-        return "move, search, help, quit, inventory" + " (move: east, west, north, south)";
+        return "Invalid Command!";
     }
 
     @Override
